@@ -1,0 +1,15 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\qsys File\Shell\Magic Open]
+
+[HKEY_CLASSES_ROOT\qsys File\Shell\Magic Open\Command]
+@="\"C:\\WINDOWS\\system32\\wscript.exe\" \"C:\\qlaunch.js\" \"%1\""
+
+[HKEY_CLASSES_ROOT\qsys File\Shell\Open]
+
+[HKEY_CLASSES_ROOT\qsys File\Shell\Open\Command]
+@="\"C:\\WINDOWS\\system32\\wscript.exe\" \"C:\\qlaunch.js\" \"%1\""
+
+[HKEY_CLASSES_ROOT\.qsys]
+@="qsys File"
+
