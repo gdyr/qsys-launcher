@@ -1,12 +1,15 @@
 # Q-Sys Launcher
 This WSH script and registry patch will associate .qsys files with the version of Designer with which they were originally created.
 (So files last saved in 5.4 will open in Designer 5.4, and so on.)
+If there is no exact match, it will open the design file with the earliest possible compatible version installed.
 
 ### INSTALL
 
 Copy `qlaunch.js` to `C:\`.
 
 Run / merge `registry.reg`.
+
+
 
 
 ### Icon Fix

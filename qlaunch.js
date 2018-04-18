@@ -108,18 +108,46 @@ if (programs.ReturnValue !== 0 || programs.sNames == null) { WScript.Quit(); }
 var program_names = programs.sNames.toArray();
 for(var i in program_names) { program_names[i] = uninstallKey + '\\' + program_names[i]; }
 
+var foundversions = {};
+
+function open(location) {
+  var exec = '"' + location + '\\Q-Sys Designer.exe" "' + filePath + '"';
+  shell.Exec(exec);
+  WScript.Quit();
+}
+
 for (var i = 0; i < program_names.length; ++i) {
   var name = reg._GetValue('String', HKLM, program_names[i], 'DisplayName');
   var version = reg._GetValue('String', HKLM, program_names[i], 'DisplayVersion');
   if(!name || name.ReturnValue !== 0 || !version || version.ReturnValue !== 0) { continue; }
-  if(name.sValue.indexOf('Q-SYS Designer') !== -1) {
+  if(name.sValue.toUpperCase().indexOf('Q-SYS DESIGNER') !== -1) {
     var prog_majorminor = version.sValue.split('.').slice(0,2).join('.');
+    var location = reg._GetValue('String', HKLM, program_names[i], 'InstallLocation').sValue;
+    foundversions[prog_majorminor] = location;
     if(prog_majorminor == majorminor) {
-      var location = reg._GetValue('String', HKLM, program_names[i], 'InstallLocation').sValue;
-      var exec = '"' + location + '\\Q-Sys Designer.exe" "' + filePath + '"';
-      shell.Exec(exec);
-      //WScript.Echo(exec);
-      WScript.Quit();
+      open(location);
     }   
   }
+}
+
+// if we reached here, there was no exact match.
+var cMajor, cMinor, loc;
+var fileMajor = majorminor.split('.')[0];
+var fileMinor = majorminor.split('.')[1];
+for(var v in foundversions) {
+  var major = parseInt(v.split('.')[0], 10);
+  var minor = parseInt(v.split('.')[1], 10);
+  if(major > fileMajor || (major == fileMajor && minor > fileMinor)) { // if Designer is newer than file
+    if(!cMajor || major < cMajor || (major == cMajor && minor < cMinor)) {
+      cMajor = major;
+      cMinor = minor;
+      loc = foundversions[v];
+    }
+  }
+}
+if(loc) {
+  WScript.Echo('This file was created in Designer ' + majorminor + ', which is not installed.\nOpening in Designer ' + cMajor + '.' + cMinor + ' instead.');
+  open(location);
+} else {
+  WScript.Echo("You do not have a new enough version of Designer to open this file.");
 }
