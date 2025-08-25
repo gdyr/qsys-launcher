@@ -12,7 +12,9 @@ if(!match) {
   WScript.Quit();
 }
 
-var majorminor = match[1].split('.').slice(0,2).join('.');
+var majorminor_parts = match[1].split('.').slice(0,2);
+if(majorminor_parts[0] == '1') { majorminor_parts[0] = '10'; }
+var majorminor = majorminor_parts.join('.');
 
 /*** Enumerate Q-Sys Designer Versions installed ***/
 var net = WScript.CreateObject('WScript.Network');
